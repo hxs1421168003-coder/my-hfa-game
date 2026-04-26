@@ -1076,7 +1076,7 @@
                 <button class="proto-icon" onclick="openAvatarSwitch()">
                     <img src="images/ui/切换.png" alt="切换形象">
                 </button>
-                <div class="proto-mid-name-card" id="protoProfileId" ondblclick="editProfileId()">昵称</div>
+                <div class="proto-mid-name-card" id="protoProfileId" ondblclick="editProfileId()">Lin</div>
                 <button class="proto-icon" onclick="showToast('皮肤功能开发中...')">
                     <img src="images/ui/皮肤.png" alt="皮肤">
                 </button>
@@ -1399,7 +1399,7 @@
         const DEFAULT_AVATAR_ID = AVATAR_TYPES[0] ? AVATAR_TYPES[0].id : '';
 
         function getProfileName() {
-            return localStorage.getItem(PROFILE_NAME_KEY) || '昵称';
+            return localStorage.getItem(PROFILE_NAME_KEY) || 'Lin';
         }
 
         function saveProfileName(name) {
@@ -1828,7 +1828,7 @@
             if (!trimmed) return;
             saveProfileName(trimmed);
             updateUI();
-            showToast('昵称已更新');
+            showToast('Lin已更新');
         }
 
         function editProfileId() {
@@ -2056,7 +2056,7 @@
             // 好感度 + 背包（背包内容在打开时实时读取，无需定时刷新）
             if (protoName) protoName.textContent = getProfileName();
             if (protoUser) protoUser.textContent = `用户名：${(currentUser && currentUser.username) || ADMIN_USERNAME}`;
-            if (protoMidId) protoMidId.textContent = getProfileId() || '昵称';
+            if (protoMidId) protoMidId.textContent = getProfileId() || 'Lin';
             
             updatePlotGrid(data);
             updateShop(data);

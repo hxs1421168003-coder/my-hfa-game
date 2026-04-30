@@ -211,7 +211,8 @@
         }
 
         /* 猫猫点击弹跳 */
-        .proto-cat.cat-bounce img {
+        .proto-cat.cat-bounce img,
+        .proto-cat.cat-bounce video {
             animation: catBounce 0.4s ease;
         }
 
@@ -1076,7 +1077,7 @@
                 <button class="proto-icon" onclick="openAvatarSwitch()">
                     <img src="images/ui/切换.png" alt="切换形象">
                 </button>
-                <div class="proto-mid-name-card" id="protoProfileId" ondblclick="editProfileId()">Lin</div>
+                <div class="proto-mid-name-card" id="protoProfileId" ondblclick="editProfileId()">昵称</div>
                 <button class="proto-icon" onclick="showToast('皮肤功能开发中...')">
                     <img src="images/ui/皮肤.png" alt="皮肤">
                 </button>
@@ -1257,9 +1258,35 @@
                 new Audio('audio/cathulu.MP3')
             ],
             harvest: new Audio('audio/超级玛丽.MP3'),
-            checkin: new Audio('audio/打卡成功.MP3')
+            checkin: new Audio('audio/打卡成功.MP3'),
+            buy: new Audio('audio/点击2.MP3'),
+            uiClick: new Audio('audio/点击4.MP3')
         };
         sfx.purr[0].loop = false;
+
+        // BGM 常驻背景音乐（首次用户交互时启动）
+        const bgm = new Audio('audio/斑驳阳光1.wav');
+        bgm.loop = true;
+        bgm.volume = 0.3;
+        let bgmStarted = false;
+        function startBGM() {
+            if (bgmStarted) return;
+            bgmStarted = true;
+            bgm.play().catch(() => {});
+            document.removeEventListener('click', startBGM);
+            document.removeEventListener('touchstart', startBGM);
+        }
+        document.addEventListener('click', startBGM);
+        document.addEventListener('touchstart', startBGM);
+
+        // UI 按钮点击音效（事件委托）
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('.proto-icon');
+            if (btn) {
+                sfx.uiClick.currentTime = 0;
+                sfx.uiClick.play().catch(() => {});
+            }
+        });
         let catClickCount = 0;  // 猫叫计数器，每5次叫一声
         let purrPlaying = false; // 呼噜声是否正在播放
         let meowPlaying = false; // 猫叫是否正在播放
@@ -1308,7 +1335,7 @@
             { id: '觉觉喵', name: '觉觉喵', img: '喵喵/觉觉喵.png' },
             { id: '欧耶喵', name: '欧耶喵', img: '喵喵/欧耶喵.png' },
             { id: '生气喵', name: '生气喵', img: '喵喵/生气喵.png' },
-            { id: '天才喵', name: '天才喵', img: '喵喵/天才喵.png' },
+            { id: '天才喵', name: '天才喵', img: '喵喵/天才喵.png', idleVideo: '喵喵/天才喵呼吸.webm', clickVideo: ['喵喵/天才喵眨眼.webm', '喵喵/天才喵打游戏.webm'] },
             { id: '休息喵', name: '休息喵', img: '喵喵/休息喵.png' },
         ];
         
@@ -1399,7 +1426,7 @@
         const DEFAULT_AVATAR_ID = AVATAR_TYPES[0] ? AVATAR_TYPES[0].id : '';
 
         function getProfileName() {
-            return localStorage.getItem(PROFILE_NAME_KEY) || 'Lin';
+            return localStorage.getItem(PROFILE_NAME_KEY) || '昵称';
         }
 
         function saveProfileName(name) {
@@ -1422,7 +1449,14 @@
                 avatarBox.innerHTML = `<img src="${avatar.img}" alt="${avatar.name}">`;
             }
             if (companionBox) {
-                companionBox.innerHTML = `<img src="${avatar.img}" alt="${avatar.name}">`;
+                if (avatar.idleVideo && avatar.clickVideo) {
+                    // 天才喵：用视频元素
+                    companionBox.innerHTML = `
+                        <video id="catVideo" src="${avatar.idleVideo}" autoplay loop muted playsinline
+                            style="width:100%;height:100%;object-fit:contain;pointer-events:none;"></video>`;
+                } else {
+                    companionBox.innerHTML = `<img src="${avatar.img}" alt="${avatar.name}">`;
+                }
             }
         }
 
@@ -1517,17 +1551,41 @@
             playCatMeow();
             playCatPurr();
 
+            // 天才喵：点击切换到眨眼视频，播完回到呼吸
+            const currentAvatarId = localStorage.getItem('currentAvatar') || DEFAULT_AVATAR_ID;
+            const currentAvatarData = AVATAR_TYPES.find(a => a.id === currentAvatarId);
+            if (currentAvatarData && currentAvatarData.clickVideo) {
+                const video = document.getElementById('catVideo');
+                if (video && !video._clicking) {
+                    video._clicking = true;
+                    video.loop = false;
+                    // clickVideo 支持数组（随机）或字符串
+                    const clickVideos = Array.isArray(currentAvatarData.clickVideo)
+                        ? currentAvatarData.clickVideo
+                        : [currentAvatarData.clickVideo];
+                    const picked = clickVideos[Math.floor(Math.random() * clickVideos.length)];
+                    video.src = picked;
+                    video.play().catch(() => {});
+                    video.onended = () => {
+                        video._clicking = false;
+                        video.loop = true;
+                        video.src = currentAvatarData.idleVideo;
+                        video.play().catch(() => {});
+                    };
+                }
+            } else {
+                // 普通形象：弹跳动画
+                const catEl = document.getElementById('protoCompanionAvatar');
+                catEl.classList.add('cat-bounce');
+                setTimeout(() => catEl.classList.remove('cat-bounce'), 400);
+            }
+            
+            // 好感度逻辑（所有形象通用）
             const data = getGameData();
             resetDailyAffectionIfNeeded(data);
-            
             const currentLevel = getCatLevel(data.catData.affection);
             const todayLeft = currentLevel.dailyLimit - data.catData.todayAffection;
-            
-            // 不管有没有额度，都播放动画和飘爱心
-            const catEl = document.getElementById('protoCompanionAvatar');
-            catEl.classList.add('cat-bounce');
-            setTimeout(() => catEl.classList.remove('cat-bounce'), 400);
-            
+
             if (todayLeft > 0) {
                 // 有额度：随机+1~5好感
                 const affectionGain = Math.floor(Math.random() * 5) + 1;
@@ -1828,7 +1886,7 @@
             if (!trimmed) return;
             saveProfileName(trimmed);
             updateUI();
-            showToast('Lin已更新');
+            showToast('昵称已更新');
         }
 
         function editProfileId() {
@@ -2015,6 +2073,9 @@
         // 点击地块种植逻辑在 Step2 的 clickPlot() 中
         // ============================================================
         function buyFlower(flowerId) {
+            sfx.buy.currentTime = 0;
+            sfx.buy.play().catch(() => {});
+
             const data = getGameData();
             const flower = FLOWER_TYPES.find(f => f.id === flowerId);
             if (!flower) return;
@@ -2056,7 +2117,7 @@
             // 好感度 + 背包（背包内容在打开时实时读取，无需定时刷新）
             if (protoName) protoName.textContent = getProfileName();
             if (protoUser) protoUser.textContent = `用户名：${(currentUser && currentUser.username) || ADMIN_USERNAME}`;
-            if (protoMidId) protoMidId.textContent = getProfileId() || 'Lin';
+            if (protoMidId) protoMidId.textContent = getProfileId() || '昵称';
             
             updatePlotGrid(data);
             updateShop(data);

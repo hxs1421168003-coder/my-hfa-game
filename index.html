@@ -67,6 +67,7 @@
             overflow: hidden;
             cursor: pointer;
             flex-shrink: 0;
+            align-self: center;
         }
 
         .proto-avatar img {
@@ -617,7 +618,7 @@
             position: fixed;
             left: 50%;
             transform: translateX(-50%);
-            bottom: 2px;
+            bottom: -6px;
             width: min(600px, calc(100vw - 24px));
             max-width: 1080px;
             display: flex;
@@ -986,6 +987,248 @@
             color: rgba(255,255,255,0.8);
             font-size: 12px;
         }
+
+        /* ============================================================
+           页面切换：花园 / 信箱
+           ============================================================ */
+        .page-garden { display: block; }
+        .page-mailbox { display: none; }
+        .page-mailbox.active { display: block; }
+        .page-garden.hidden { display: none; }
+
+
+
+        /* 精品鲜花计数（顶栏） */
+        .premium-flower-card {
+            height: 36px;
+            padding: 0 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            flex-shrink: 0;
+            border: 2px solid #c0392b;
+            border-radius: 7px;
+            background: rgba(255, 220, 220, 0.95);
+            color: #c0392b;
+        }
+        .premium-flower-card img {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* ============================================================
+           信箱页面整体
+           ============================================================ */
+        .mailbox-shell {
+            position: relative;
+            width: 100%;
+            min-height: 1080px;
+            background: url('images/bg.png') no-repeat center top;
+            background-size: cover;
+            overflow: hidden;
+            padding-bottom: 120px;
+        }
+
+        .mailbox-title {
+            text-align: center;
+            padding: 230px 0 18px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #5d4037;
+            text-shadow: 0 1px 4px rgba(255,255,255,0.7);
+        }
+
+        .mailbox-premium-hint {
+            text-align: center;
+            font-size: 13px;
+            color: #c0392b;
+            font-weight: bold;
+            margin-bottom: 18px;
+        }
+
+        /* 花束网格 */
+        .bouquet-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            padding: 0 20px 20px;
+        }
+
+        .bouquet-card {
+            position: relative;
+            background: rgba(255, 248, 232, 0.95);
+            border: 2px solid #8b5a2b;
+            border-radius: 18px;
+            padding: 14px 10px 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            min-height: 160px;
+            overflow: hidden;
+        }
+        .bouquet-card:active {
+            transform: scale(0.97);
+        }
+        .bouquet-card.unlocked {
+            box-shadow: 0 4px 16px rgba(139,90,43,0.18);
+        }
+
+        .bouquet-img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+        }
+
+        .bouquet-name {
+            font-size: 12px;
+            font-weight: bold;
+            color: #5d4037;
+            text-align: center;
+        }
+
+        .bouquet-letter-btn {
+            padding: 5px 14px;
+            border: none;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #e07b39, #f0a050);
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .bouquet-letter-btn img {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* 未解锁蒙版 */
+        .bouquet-locked-mask {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.72);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        .bouquet-locked-mask img {
+            width: 36px;
+            height: 36px;
+            opacity: 0.9;
+        }
+        .bouquet-locked-text {
+            color: rgba(255,255,255,0.85);
+            font-size: 11px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 1.5;
+        }
+        .bouquet-craft-btn {
+            margin-top: 4px;
+            padding: 6px 14px;
+            border: none;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #e07b39, #f0a050);
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .bouquet-craft-btn:disabled {
+            background: #888;
+            cursor: not-allowed;
+        }
+
+        /* 信件弹窗 */
+        .letter-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+        }
+        .letter-modal-overlay.show {
+            display: flex;
+        }
+        .letter-modal {
+            background: url('images/bg.png') center/cover, #fff8e8;
+            border: 3px solid #8b5a2b;
+            border-radius: 22px;
+            padding: 28px 24px 24px;
+            width: min(88vw, 360px);
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 16px 50px rgba(0,0,0,0.3);
+        }
+        .letter-modal::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255,248,230,0.92);
+            border-radius: 20px;
+            z-index: 0;
+        }
+        .letter-modal > * { position: relative; z-index: 1; }
+
+        .letter-close {
+            position: absolute;
+            top: 12px;
+            right: 14px;
+            z-index: 2;
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            color: #8b5a2b;
+            line-height: 1;
+        }
+        .letter-header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .letter-bouquet-img {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            margin-bottom: 6px;
+        }
+        .letter-title {
+            font-size: 17px;
+            font-weight: bold;
+            color: #5d4037;
+        }
+        .letter-body {
+            font-size: 14px;
+            color: #5d4037;
+            line-height: 1.9;
+            white-space: pre-wrap;
+            background: rgba(255,255,255,0.5);
+            border-radius: 12px;
+            padding: 14px 16px;
+            border: 1px solid rgba(139,90,43,0.2);
+        }
+        .letter-footer {
+            text-align: right;
+            margin-top: 12px;
+            font-size: 12px;
+            color: #8b7355;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -1023,7 +1266,7 @@
         </div>
     </div>
 
-    <div class="container">
+    <div class="container page-garden" id="gardenPage">
         <div class="proto-shell">
             <div class="proto-top-bar">
                 <button class="proto-avatar" id="protoAvatarButton" onclick="openAvatarSwitch()">
@@ -1033,27 +1276,32 @@
                     <div class="proto-name-card" id="protoProfileName" ondblclick="editProfileName()">名称</div>
                     <div class="proto-username-card" id="protoProfileUser">用户名：hfa123321</div>
                 </div>
-                <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
-                <div class="proto-sun-card">
-                    <img src="images/ui/阳光.png" alt="阳光">
-                    <span id="protoSunCount">0</span>
-                    <span>阳光</span>
-                </div>
+                <div style="display:flex;gap:6px;align-items:center;align-self:flex-start;margin-top:8px;">
                     <!-- 当前选中种子图标（有选中时显示，点击可取消选中） -->
                     <div id="selectedSeedBadge" style="display:none;cursor:pointer;background:rgba(239,232,194,0.95);border:2px solid #8b5a2b;border-radius:7px;padding:2px 8px;font-size:13px;color:#5d4037;white-space:nowrap;" onclick="cancelSelectedSeed()">
                         <span id="selectedSeedEmoji"></span> <span id="selectedSeedName"></span> <span style="font-size:10px;opacity:0.6;">×取消</span>
+                    </div>
+                    <div class="premium-flower-card">
+                        <span>🌸</span>
+                        <span id="protoPremiumCount">0</span>
+                        <span>精品</span>
+                    </div>
+                    <div class="proto-sun-card">
+                        <img src="images/ui/阳光.png" alt="阳光">
+                        <span id="protoSunCount">0</span>
+                        <span>阳光</span>
                     </div>
                     <button class="proto-login-btn" onclick="openLoginModal()">登录</button>
                 </div>
             </div>
 
-            <button class="proto-icon left-1" onclick="showToast('花园功能开发中...')">
+            <button class="proto-icon left-1" onclick="switchPage('garden')">
                 <img src="images/ui/花园.png" alt="花园">
             </button>
             <button class="proto-icon left-2" onclick="openShopModal()">
                 <img src="images/ui/商店.png" alt="商店">
             </button>
-            <button class="proto-icon left-3" onclick="showToast('信箱功能开发中...')">
+            <button class="proto-icon left-3" onclick="switchPage('mailbox')">
                 <img src="images/ui/信箱.png" alt="信箱">
             </button>
 
@@ -1100,7 +1348,8 @@
         </div>
     </div>
 
-    <div class="proto-bottom-icons">
+    <!-- 底部工具栏（花园页） -->
+    <div class="proto-bottom-icons" id="gardenBottomBar">
         <!-- 种子按钮：打开种子选择弹窗，选中后点地块种植 -->
         <button class="proto-icon" onclick="openSeedPicker()">
             <img src="images/ui/种子.png" alt="种子">
@@ -1113,6 +1362,58 @@
         <button class="proto-icon" onclick="openBagModal()">
             <img src="images/ui/背包.png" alt="背包">
         </button>
+    </div>
+
+    <!-- ============================================================
+         信箱页面
+         ============================================================ -->
+    <div class="container page-mailbox" id="mailboxPage">
+        <div class="mailbox-shell">
+            <!-- 顶栏复用（信箱页也显示） -->
+            <div class="proto-top-bar">
+                <button class="proto-avatar" id="mailboxAvatarButton" onclick="openAvatarSwitch()">
+                    <div id="mailboxAvatarImg">头像</div>
+                </button>
+                <div class="proto-profile-info">
+                    <div class="proto-name-card" id="mailboxProfileName">名称</div>
+                    <div class="proto-username-card" id="mailboxProfileUser">用户名：hfa123321</div>
+                </div>
+                <div style="display:flex;gap:6px;align-items:center;align-self:flex-start;margin-top:8px;">
+                    <div class="premium-flower-card">
+                        <span>🌸</span>
+                        <span id="mailboxPremiumCount">0</span>
+                        <span>精品</span>
+                    </div>
+                    <div class="proto-sun-card">
+                        <img src="images/ui/阳光.png" alt="阳光">
+                        <span id="mailboxSunCount">0</span>
+                        <span>阳光</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="proto-icon left-1" onclick="switchPage('garden')">
+                <img src="images/ui/花园.png" alt="花园">
+            </button>
+
+            <div class="mailbox-title">💌 花束信箱</div>
+            <div class="mailbox-premium-hint">🌸 精品鲜花 × <span id="mailboxPremiumHint">0</span> &nbsp;｜&nbsp; 9朵精品鲜花 = 1束花束</div>
+
+            <!-- 花束网格 -->
+            <div class="bouquet-grid" id="bouquetGrid"></div>
+        </div>
+    </div>
+
+
+
+    <!-- ============================================================
+         信件弹窗
+         ============================================================ -->
+    <div class="letter-modal-overlay" id="letterModal">
+        <div class="letter-modal">
+            <button class="letter-close" onclick="closeLetterModal()">×</button>
+            <div id="letterModalContent"></div>
+        </div>
     </div>
     
     <!-- 提示 -->
@@ -1265,7 +1566,7 @@
         sfx.purr[0].loop = false;
 
         // BGM 常驻背景音乐（首次用户交互时启动）
-        const bgm = new Audio('audio/斑驳阳光1.wav');
+        const bgm = new Audio('audio/轻松的，愉悦的树林子.MP3');
         bgm.loop = true;
         bgm.volume = 0.3;
         let bgmStarted = false;
@@ -1376,6 +1677,7 @@
                 checkInHistory: data.checkInHistory || [],
                 catData: data.catData || { affection: 0, level: 0, todaySun: 0, todayFertilizer: 0, todayAffection: 0, todayFertilizerCount: 0, lastResetDate: '' },
                 bag: data.bag || {}, // 背包，key=道具ID，value=数量（Step8 引入）
+                unlockedBouquets: data.unlockedBouquets || [], // 已解锁的花束 id 数组
                 ...data
             };
         }
@@ -1865,6 +2167,9 @@
             if (!data.checkInHistory) data.checkInHistory = [];
             if (!data.plots) data.plots = new Array(9).fill(null);
             if (!data.bag) data.bag = {};
+            if (!data.unlockedBouquets) data.unlockedBouquets = [];
+            // 普通新玩家赠送9朵精品鲜花
+            if (!data.bag.premiumFlower) data.bag.premiumFlower = 9;
             saveGameData(data);
         }
         
@@ -1925,6 +2230,9 @@
             FLOWER_TYPES.forEach(f => {
                 data.bag[f.id] = (data.bag[f.id] || 0) + 3;
             });
+            // 演示账号：赠送999精品鲜花 + 99化肥
+            data.bag.premiumFlower = (data.bag.premiumFlower || 0) + 999;
+            data.bag.fertilizer = (data.bag.fertilizer || 0) + 99;
             const today = new Date();
             for (let i = 0; i < 30; i++) {
                 const d = new Date(today);
@@ -2113,15 +2421,43 @@
             const protoUser = document.getElementById('protoProfileUser');
             const protoMidId = document.getElementById('protoProfileId');
             if (protoSunCount) protoSunCount.textContent = data.sun;
+
+            // 精品鲜花数量（花园顶栏 + 信箱顶栏 + 信箱提示）
+            const premiumCount = (data.bag && data.bag.premiumFlower) || 0;
+            const el1 = document.getElementById('protoPremiumCount');
+            const el2 = document.getElementById('mailboxPremiumCount');
+            const el3 = document.getElementById('mailboxPremiumHint');
+            const el4 = document.getElementById('mailboxSunCount');
+            if (el1) el1.textContent = premiumCount;
+            if (el2) el2.textContent = premiumCount;
+            if (el3) el3.textContent = premiumCount;
+            if (el4) el4.textContent = data.sun;
+
+            // 信箱页顶栏名称同步
+            const mbName = document.getElementById('mailboxProfileName');
+            const mbUser = document.getElementById('mailboxProfileUser');
+            const mbAvatar = document.getElementById('mailboxAvatarImg');
+            if (mbName) mbName.textContent = getProfileName();
+            if (mbUser) mbUser.textContent = `用户名：${(currentUser && currentUser.username) || ADMIN_USERNAME}`;
+            if (mbAvatar) {
+                const avatarId = localStorage.getItem('currentAvatar') || DEFAULT_AVATAR_ID;
+                const av = AVATAR_TYPES.find(a => a.id === avatarId) || AVATAR_TYPES[0];
+                if (av) mbAvatar.innerHTML = `<img src="${av.img}" alt="${av.name}">`;
+            }
             
             // 好感度 + 背包（背包内容在打开时实时读取，无需定时刷新）
             if (protoName) protoName.textContent = getProfileName();
             if (protoUser) protoUser.textContent = `用户名：${(currentUser && currentUser.username) || ADMIN_USERNAME}`;
-            if (protoMidId) protoMidId.textContent = getProfileId() || '昵称';
+            if (protoMidId) protoMidId.textContent = getProfileId() || 'Lin';
             
             updatePlotGrid(data);
             updateShop(data);
             updateCatAffectionDisplay(data); // 刷新猫猫好感度
+
+            // 如果信箱页可见，同步渲染花束格子
+            if (document.getElementById('mailboxPage').classList.contains('active')) {
+                renderBouquetGrid();
+            }
         }
         
         // ============================================================
@@ -2588,12 +2924,20 @@
             
             data.sun += reward;
             data.plots[index] = null; // 清空地块
+
+            // 50% 概率获得精品鲜花
+            let premiumMsg = '';
+            if (Math.random() < 0.5) {
+                if (!data.bag) data.bag = {};
+                data.bag.premiumFlower = (data.bag.premiumFlower || 0) + 1;
+                premiumMsg = ' + 🌸精品鲜花×1';
+            }
             
             saveGameData(data);
             closePlotActionModal();
             updateUI();
             playHarvestSfx();
-            showToast(`收获 ${flower ? flower.emoji + flower.name : '花卉'}！+${reward} ☀️ 🎉`);
+            showToast(`收获 ${flower ? flower.emoji + flower.name : '花卉'}！+${reward} ☀️🎉${premiumMsg}`);
         }
         
         // ============================================================
@@ -2718,13 +3062,167 @@
             if (e.target === this) closeBagModal();
         });
 
+        // ============================================================
+        // 页面切换：花园 / 信箱
+        // ============================================================
+        let currentPage = 'garden';
+
+        function switchPage(page) {
+            currentPage = page;
+            const gardenContainer = document.getElementById('gardenPage');
+            const gardenBar = document.getElementById('gardenBottomBar');
+            const mailboxPage = document.getElementById('mailboxPage');
+
+            if (page === 'garden') {
+                if (gardenContainer) gardenContainer.classList.remove('hidden');
+                if (gardenBar) gardenBar.style.display = 'flex';
+                mailboxPage.classList.remove('active');
+            } else {
+                if (gardenContainer) gardenContainer.classList.add('hidden');
+                if (gardenBar) gardenBar.style.display = 'none';
+                mailboxPage.classList.add('active');
+                renderBouquetGrid();
+                updateUI();
+            }
+        }
+
+        // ============================================================
+        // 花束配置表（9种，对应 花束1.png ~ 花束9.png）
+        // letter: 信件正文占位符，用户可自行替换
+        // ============================================================
+        const BOUQUET_TYPES = [
+            { id: 1, name: '浅海花信',   img: 'images/花束/花束1.png', letter: '嗨，小猫：\n\n今天有多讨厌我呢？\n是多一点还是少一点？\n\n请原谅我也是一只不太会表达的小动物，\n还是来学习《如何正确沟通100法》吧，能学会的吧！\n\n小猫五一出门辛苦了，\n希望小猫一直幸运，玩的开心。\n\n嘿，一起来守护小猫的美丽笑容吧，好吗？\n\n💙来自小动物的问候' },
+            { id: 2, name: '橘子辉煌',   img: 'images/花束/花束2.png', letter: '嗨，小猫：\n\n今天是4月30号早上，你好吗小猫。\n希望我们都好。\n\n我们只是两只需要睡眠和玩耍的小动物而已，就是应该在家玩耍打闹才对，才不要管那么多事呢！\n\n不过既然发生，就先面对吧，\n抬头的时候应该能看到\n“玻璃晴朗，橘子辉煌。”\n\n💙 来自晴天的问候' },
+            { id: 3, name: '白桃初醒',   img: 'images/花束/花束3.png', letter: '亲爱的你，\n\n有些话藏在花里——\n梦见你的时候，连花都开得格外好看。\n\n💜 来自梦里的问候' },
+            { id: 4, name: '夜紫之庭',   img: 'images/花束/花束4.png', letter: '你好，\n\n世界上有很多种温柔，\n而你是我最喜欢的那一种。\n\n🌷 轻轻的送给你' },
+            { id: 5, name: '云絮低语',   img: 'images/花束/花束5.png', letter: '嗨！\n\n这束花甜吗？\n不如你甜。\n\n🍬 甜到发腻的心意' },
+            { id: 6, name: '夏日序章',   img: 'images/花束/花束6.png', letter: '亲爱的，\n\n不管遇到什么，\n你都比你以为的更勇敢。\n这束花为你加油！\n\n💪 永远支持你' },
+            { id: 7, name: '日光来信',   img: 'images/花束/花束7.png', letter: '嘿，\n\n你知道吗，\n星星每天都在等你抬头看它，\n就像我每天都在等你的消息。\n\n✨ 星星也羡慕你' },
+            { id: 8, name: '淡彩之春',   img: 'images/花束/花束8.png', letter: '亲爱的，\n\n辛苦了，\n今天可以停下来休息一下，\n闻一闻这束花的香气。\n\n🌿 轻轻抱抱你' },
+            { id: 9, name: '柔光絮语',   img: 'images/花束/花束9.png', letter: '最亲爱的你，\n\n有些东西会随时间消逝，\n但我对你的心意不会。\n这是第九束花，也是最特别的一束。\n\n💝 永远永远' },
+        ];
+
+        const PREMIUM_COST = 9; // 制作一个花束需要的精品鲜花数量
+
+        // ============================================================
+        // 花束网格渲染
+        // ============================================================
+        function renderBouquetGrid() {
+            const data = getGameData();
+            const unlockedBouquets = data.unlockedBouquets || [];
+            const premiumCount = (data.bag && data.bag.premiumFlower) || 0;
+            const grid = document.getElementById('bouquetGrid');
+            if (!grid) return;
+
+            grid.innerHTML = '';
+
+            BOUQUET_TYPES.forEach(bouquet => {
+                const isUnlocked = unlockedBouquets.includes(bouquet.id);
+                const card = document.createElement('div');
+                card.className = 'bouquet-card' + (isUnlocked ? ' unlocked' : '');
+
+                // 花束内容（无论是否解锁，底层都渲染，靠蒙版遮挡）
+                card.innerHTML = `
+                    <img class="bouquet-img" src="${bouquet.img}" alt="${bouquet.name}">
+                    <div class="bouquet-name">${bouquet.name}</div>
+                    ${isUnlocked ? `
+                        <button class="bouquet-letter-btn" onclick="openLetterModal(${bouquet.id})">
+                            <img src="images/ui/信件.png" alt="信件"> 查看信件
+                        </button>
+                    ` : ''}
+                `;
+
+                // 未解锁：叠加黑色蒙版
+                if (!isUnlocked) {
+                    const canCraft = premiumCount >= PREMIUM_COST;
+                    const mask = document.createElement('div');
+                    mask.className = 'bouquet-locked-mask';
+                    mask.innerHTML = `
+                        <img src="images/ui/未解锁.png" alt="未解锁">
+                        <div class="bouquet-locked-text">未解锁\n制作后可查看</div>
+                        <button class="bouquet-craft-btn" ${canCraft ? '' : 'disabled'}
+                            onclick="craftBouquet(${bouquet.id})">
+                            ${canCraft ? `🌸×${PREMIUM_COST} 制作` : `🌸${premiumCount}/${PREMIUM_COST}`}
+                        </button>
+                    `;
+                    card.appendChild(mask);
+                }
+
+                grid.appendChild(card);
+            });
+        }
+
+        // ============================================================
+        // 制作花束（消耗9朵精品鲜花，解锁对应花束）
+        // ============================================================
+        function craftBouquet(bouquetId) {
+            const data = getGameData();
+            const premiumCount = (data.bag && data.bag.premiumFlower) || 0;
+
+            if (premiumCount < PREMIUM_COST) {
+                showToast(`精品鲜花不足！还需 ${PREMIUM_COST - premiumCount} 朵 🌸`);
+                return;
+            }
+
+            if (!data.unlockedBouquets) data.unlockedBouquets = [];
+            if (data.unlockedBouquets.includes(bouquetId)) {
+                showToast('这个花束已经制作过了 💐');
+                return;
+            }
+
+            // 扣除精品鲜花
+            data.bag.premiumFlower = premiumCount - PREMIUM_COST;
+            if (data.bag.premiumFlower <= 0) delete data.bag.premiumFlower;
+
+            // 解锁花束
+            data.unlockedBouquets.push(bouquetId);
+            saveGameData(data);
+            updateUI();
+            renderBouquetGrid();
+
+            const bouquet = BOUQUET_TYPES.find(b => b.id === bouquetId);
+            showToast(`💐 ${bouquet ? bouquet.name : '花束'} 制作成功！`);
+
+            // 自动弹出信件
+            setTimeout(() => openLetterModal(bouquetId), 600);
+        }
+
+        // ============================================================
+        // 信件弹窗
+        // ============================================================
+        function openLetterModal(bouquetId) {
+            const bouquet = BOUQUET_TYPES.find(b => b.id === bouquetId);
+            if (!bouquet) return;
+
+            const content = document.getElementById('letterModalContent');
+            content.innerHTML = `
+                <div class="letter-header">
+                    <img class="letter-bouquet-img" src="${bouquet.img}" alt="${bouquet.name}">
+                    <div class="letter-title">💌 ${bouquet.name}</div>
+                </div>
+                <div class="letter-body">${bouquet.letter}</div>
+                <div class="letter-footer">— 来自猫猫花园 🐱</div>
+            `;
+
+            document.getElementById('letterModal').classList.add('show');
+        }
+
+        function closeLetterModal() {
+            document.getElementById('letterModal').classList.remove('show');
+        }
+
+        document.getElementById('letterModal').addEventListener('click', function(e) {
+            if (e.target === this) closeLetterModal();
+        });
+
+        // ============================================================
+        // 初始化
+        // ============================================================
         initGameData();
         initAvatar();
         updateUI();
 
-        // ============================================================
         // 每分钟自动刷新地块显示（让自然生长进度条实时更新）
-        // ============================================================
         setInterval(() => {
             const data = getGameData();
             updatePlotGrid(data);
